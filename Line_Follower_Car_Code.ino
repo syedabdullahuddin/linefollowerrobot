@@ -1,169 +1,105 @@
-#include <AFMotor.h>
- 
-//initial motors pin
-AF_DCMotor motor1(1, MOTOR12_1KHZ);
-AF_DCMotor motor2(2, MOTOR12_1KHZ);
-AF_DCMotor motor3(3, MOTOR34_1KHZ);
-AF_DCMotor motor4(4, MOTOR34_1KHZ);
- 
-int val;
-int Speeed = 255;
- 
-void setup()
-{
-  Serial.begin(9600);  //Set the baud rate to your Bluetooth module.
+#define in1 9
+#define in2 8
+#define in3 7
+#define in4 6
+#define enA 10
+#define enB 5
+
+
+ int M1_Speed = 80; // speed of motor 1
+ int M2_Speed = 80; // speed of motor 2
+ int LeftRotationSpeed = 250;  // Left Rotation Speed
+ int RightRotationSpeed = 250; // Right Rotation Speed
+
+
+ void setup() { 
+  Serial.begin(9600);
+
+  pinMode(in1,OUTPUT);
+  pinMode(in2,OUTPUT);
+  pinMode(in3,OUTPUT);
+  pinMode(in4,OUTPUT);
+
+    pinMode(enA,OUTPUT);
+    pinMode(enB,OUTPUT);
+
+      pinMode(A0, INPUT); // initialize Left sensor as an input
+      pinMode(A1, INPUT); // initialize Right sensor as an input
+
 }
-void loop(){
-  if(Serial.available() > 0){
-    val = Serial.read();
-     
-    Stop(); //initialize with motors stoped
-     
-          if (val == 'F'){
-          forward();
-          }
- 
-          if (val == 'B'){
-          back();
-          }
- 
-          if (val == 'L'){
-          left();
-          }
- 
-          if (val == 'R'){
-          right();
-          }
-          if (val == 'I'){
-          topright();
-          }
- 
-          if (val == 'J'){
-          topleft();
-          }
- 
-          if (val == 'K'){
-          bottomright();
-          }
- 
-          if (val == 'M'){
-          bottomleft();
-          }
-          if (val == 'T'){
-          Stop();
-          }
-  }
+
+void loop() {
+
+  int LEFT_SENSOR = digitalRead(A0);
+  int RIGHT_SENSOR = digitalRead(A1);
+
+if(RIGHT_SENSOR==0 && LEFT_SENSOR==0) {
+    forward(); //FORWARD
 }
-          
- 
-           
- 
- 
- 
+
+  else if(RIGHT_SENSOR==0 && LEFT_SENSOR==1) {
+    right(); //Move Right
+ }
+
+  else if(RIGHT_SENSOR==1 && LEFT_SENSOR==0) {
+    left(); //Move Left
+}
+
+  else if(RIGHT_SENSOR==1 && LEFT_SENSOR==1) {
+    Stop();  //STOP
+ }
+}
+
+
+
 void forward()
 {
-  motor1.setSpeed(Speeed); //Define maximum velocity
-  motor1.run(FORWARD); //rotate the motor clockwise
-  motor2.setSpeed(Speeed); //Define maximum velocity
-  motor2.run(FORWARD); //rotate the motor clockwise
-  motor3.setSpeed(Speeed);//Define maximum velocity
-  motor3.run(FORWARD); //rotate the motor clockwise
-  motor4.setSpeed(Speeed);//Define maximum velocity
-  motor4.run(FORWARD); //rotate the motor clockwise
+            digitalWrite(in1, HIGH);
+            digitalWrite(in2, LOW);
+            digitalWrite(in3, HIGH);
+            digitalWrite(in4, LOW);
+
+                analogWrite(enA, M1_Speed);
+                analogWrite(enB, M2_Speed);
 }
- 
-void back()
+
+void backward()
 {
-  motor1.setSpeed(Speeed); //Define maximum velocity
-  motor1.run(BACKWARD); //rotate the motor anti-clockwise
-  motor2.setSpeed(Speeed); //Define maximum velocity
-  motor2.run(BACKWARD); //rotate the motor anti-clockwise
-  motor3.setSpeed(Speeed); //Define maximum velocity
-  motor3.run(BACKWARD); //rotate the motor anti-clockwise
-  motor4.setSpeed(Speeed); //Define maximum velocity
-  motor4.run(BACKWARD); //rotate the motor anti-clockwise
+            digitalWrite(in1, LOW);
+            digitalWrite(in2, HIGH);
+            digitalWrite(in3, LOW);
+            digitalWrite(in4, HIGH);
+
+                analogWrite(enA, M1_Speed);
+                analogWrite(enB, M2_Speed);
 }
- 
-void left()
-{
-  motor1.setSpeed(Speeed); //Define maximum velocity
-  motor1.run(BACKWARD); //rotate the motor anti-clockwise
-  motor2.setSpeed(Speeed); //Define maximum velocity
-  motor2.run(BACKWARD); //rotate the motor anti-clockwise
-  motor3.setSpeed(Speeed); //Define maximum velocity
-  motor3.run(FORWARD);  //rotate the motor clockwise
-  motor4.setSpeed(Speeed); //Define maximum velocity
-  motor4.run(FORWARD);  //rotate the motor clockwise
-}
- 
+
 void right()
 {
-  motor1.setSpeed(Speeed); //Define maximum velocity
-  motor1.run(FORWARD); //rotate the motor clockwise
-  motor2.setSpeed(Speeed); //Define maximum velocity
-  motor2.run(FORWARD); //rotate the motor clockwise
-  motor3.setSpeed(Speeed); //Define maximum velocity
-  motor3.run(BACKWARD); //rotate the motor anti-clockwise
-  motor4.setSpeed(Speeed); //Define maximum velocity
-  motor4.run(BACKWARD); //rotate the motor anti-clockwise
+            digitalWrite(in1, LOW);
+            digitalWrite(in2, HIGH);
+            digitalWrite(in3, HIGH);
+            digitalWrite(in4, LOW);
+
+                analogWrite(enA, LeftRotationSpeed);
+                analogWrite(enB, RightRotationSpeed);
 }
- 
-void topleft(){
-  motor1.setSpeed(Speeed); //Define maximum velocity
-  motor1.run(FORWARD); //rotate the motor clockwise
-  motor2.setSpeed(Speeed); //Define maximum velocity
-  motor2.run(FORWARD); //rotate the motor clockwise
-  motor3.setSpeed(Speeed/3.1);//Define maximum velocity
-  motor3.run(FORWARD); //rotate the motor clockwise
-  motor4.setSpeed(Speeed/3.1);//Define maximum velocity
-  motor4.run(FORWARD); //rotate the motor clockwise
-}
- 
-void topright()
+
+void left()
 {
-  motor1.setSpeed(Speeed/3.1); //Define maximum velocity
-  motor1.run(FORWARD); //rotate the motor clockwise
-  motor2.setSpeed(Speeed/3.1); //Define maximum velocity
-  motor2.run(FORWARD); //rotate the motor clockwise
-  motor3.setSpeed(Speeed);//Define maximum velocity
-  motor3.run(FORWARD); //rotate the motor clockwise
-  motor4.setSpeed(Speeed);//Define maximum velocity
-  motor4.run(FORWARD); //rotate the motor clockwise
+            digitalWrite(in1, HIGH);
+            digitalWrite(in2, LOW);
+            digitalWrite(in3, LOW);
+            digitalWrite(in4, HIGH);
+
+                analogWrite(enA, LeftRotationSpeed);
+                analogWrite(enB, RightRotationSpeed);
 }
- 
-void bottomleft()
-{
-  motor1.setSpeed(Speeed); //Define maximum velocity
-  motor1.run(BACKWARD); //rotate the motor anti-clockwise
-  motor2.setSpeed(Speeed); //Define maximum velocity
-  motor2.run(BACKWARD); //rotate the motor anti-clockwise
-  motor3.setSpeed(Speeed/3.1); //Define maximum velocity
-  motor3.run(BACKWARD); //rotate the motor anti-clockwise
-  motor4.setSpeed(Speeed/3.1); //Define maximum velocity
-  motor4.run(BACKWARD); //rotate the motor anti-clockwise
-}
- 
-void bottomright()
-{
-  motor1.setSpeed(Speeed/3.1); //Define maximum velocity
-  motor1.run(BACKWARD); //rotate the motor anti-clockwise
-  motor2.setSpeed(Speeed/3.1); //Define maximum velocity
-  motor2.run(BACKWARD); //rotate the motor anti-clockwise
-  motor3.setSpeed(Speeed); //Define maximum velocity
-  motor3.run(BACKWARD); //rotate the motor anti-clockwise
-  motor4.setSpeed(Speeed); //Define maximum velocity
-  motor4.run(BACKWARD); //rotate the motor anti-clockwise
-}
- 
- 
+
 void Stop()
 {
-  motor1.setSpeed(0); //Define minimum velocity
-  motor1.run(RELEASE); //stop the motor when release the button
-  motor2.setSpeed(0); //Define minimum velocity
-  motor2.run(RELEASE); //rotate the motor clockwise
-  motor3.setSpeed(0); //Define minimum velocity
-  motor3.run(RELEASE); //stop the motor when release the button
-  motor4.setSpeed(0); //Define minimum velocity
-  motor4.run(RELEASE); //stop the motor when release the button
+            digitalWrite(in1, LOW);
+            digitalWrite(in2, LOW);
+            digitalWrite(in3, LOW);
+            digitalWrite(in4, LOW);
 }
